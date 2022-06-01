@@ -1,0 +1,267 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+
+  <style>
+    #container {
+      width: 100%;
+      display: flex;
+      flex-flow: row nowrap;
+      justify-content: center;
+    }
+
+    #gameBoard {
+      display: grid;
+      grid-template-rows: repeat(6, 1fr);
+      row-gap: 16px;
+      
+    }
+
+    .word {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      column-gap: 16px;
+    }
+
+    .letter {
+      border: 2px solid #4F545A;
+      border-radius: 2px;
+      height: 40px;
+      width: 32px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-transform: uppercase;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: x-large;
+    }
+
+    .correct {
+      background-color: #1F781F;
+      color: white;
+    }
+
+    .present {
+      background-color: #FDA627;
+      color: white;
+    }
+
+    .wrong {
+      background-color: #4F545A;
+      color: white;
+    }
+
+    button {
+      background-color: #2795C3;
+      border: none;
+      border-radius: 4px;
+      color: white;
+      font-size: large;
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 12px;
+    }
+
+    button:focus:not([disabled]),
+    button:hover:not([disabled]) {
+      box-shadow: 0px 2px 4px 0px #4F545A;
+    }
+
+    button:active:not([disabled]) {
+      background-color: #1D6288;
+    }
+
+    button:disabled {
+      opacity: 1;
+      background-color: #687075;
+    }
+
+  </style>
+</head>
+<body>
+  <div id="container">
+    <div id="gameBoard">
+      <div class="word">
+        <div class="letter"></div>
+        <div class="letter"></div>
+        <div class="letter"></div>
+        <div class="letter"></div>
+        <div class="letter"></div>
+      </div>
+      <div class="word">
+        <div class="letter"></div>
+        <div class="letter"></div>
+        <div class="letter"></div>
+        <div class="letter"></div>
+        <div class="letter"></div>
+      </div>
+      <div class="word">
+        <div class="letter"></div>
+        <div class="letter"></div>
+        <div class="letter"></div>
+        <div class="letter"></div>
+        <div class="letter"></div>
+      </div>
+      <div class="word">
+        <div class="letter"></div>
+        <div class="letter"></div>
+        <div class="letter"></div>
+        <div class="letter"></div>
+        <div class="letter"></div>
+      </div>
+      <div class="word">
+        <div class="letter"></div>
+        <div class="letter"></div>
+        <div class="letter"></div>
+        <div class="letter"></div>
+        <div class="letter"></div>
+      </div>
+      <div class="word">
+        <div class="letter"></div>
+        <div class="letter"></div>
+        <div class="letter"></div>
+        <div class="letter"></div>
+        <div class="letter"></div>
+      </div>
+      <button id="checkWordBtn" type="button" disabled="true">Check</button>
+    </div>
+  </div>
+</body>
+<script>
+  let app = {
+    currentWord: "",
+    submittedWordCount: 0,
+    currentRowDomChildren: null,
+    checkWordBtn: null,
+    isLetter: new RegExp(/[aA-zZ]/),
+    gameAnswer: '',
+    intialize() {
+      this.setGameAnswer()
+      document.addEventListener('keyup', this.handleLetterSubmission, false);
+      this.checkWordBtn = document.getElementById('checkWordBtn')
+      this.checkWordBtn.addEventListener('click', this.handleWordSubmission, false);
+      this.currentRowDomChildren = document.getElementsByClassName('word')[0].children;
+
+    },
+     
+    handleLetterSubmission: (event) => {      
+      if (event.key.toLowerCase() == 'backspace' && app.currentWord.length > 0) {
+        let index = app.currentWord.length - 1;
+        app.currentRowDomChildren[index].innerHTML = "";
+        app.currentWord = app.currentWord.substr(0, app.currentWord.length - 1);
+      } else if (app.currentWord.length < 5 && app.isLetter.test(event.key) && event.key.length === 1) {
+        let index = app.currentWord.length;
+        app.currentRowDomChildren[index].innerHTML = event.key
+        app.currentWord += event.key
+
+      }
+      app.checkWordLength()
+    },
+
+    handleWordSubmission(event) {
+      let currentWordArr = app.currentWord.split("");
+      currentWordArr.forEach((letter, index) => {
+        if (letter === app.gameAnswerArr[index] ) {
+          app.markLetterCorrect(index)
+        } else if (app.gameAnswerArr.indexOf(letter) > -1) {
+          app.markLetterPresent(index)
+        } else {
+          app.markLetterWrong(index)
+        }
+      })
+      
+      if (app.currentWord === app.gameAnswer) {
+        alert('You win!!')
+      }
+
+      app.setupForNextWord();
+      console.log('current word', app.currentWord)
+    },
+
+    markLetterCorrect(index) {
+      this.currentRowDomChildren[index].className += ' correct';
+    },
+
+    markLetterPresent(index) {
+      this.currentRowDomChildren[index].className += ' present';
+    },
+
+    markLetterWrong(index) {
+      this.currentRowDomChildren[index].className += ' wrong';
+    },
+
+    setupForNextWord() {
+      this.submittedWordCount += 1;
+      this.currentRowDomChildren = document.getElementsByClassName('word')[this.submittedWordCount].children;
+      this.currentWord = "";
+      this.checkWordBtn.toggleAttribute('disabled');
+    },
+
+    checkWordLength() {
+      if (this.currentWord.length == 5) {
+        this.checkWordBtn.toggleAttribute('disabled');
+      }
+    },
+
+    setGameAnswer() {
+      const wordList = [
+        'chomp', 
+        'roast', 
+        'meter', 
+        'stare', 
+        'whale',
+        'crown',
+        'bayou',
+        'trick',
+        'cheat',
+        'crick',
+        'brook',
+        'brick',
+        'money',
+        'honey',
+        'paper',
+        'trick',
+        'quick',
+        'photo',
+        'clomp',
+        'clump',
+        'trump',
+        'final',
+        'payer',
+        'pound',
+        'crowd',
+        'quite',
+        'quiet',
+        'quell',
+        'smell',
+        'treat',
+        'doily',
+        'steam',
+        'waste',
+        'fling',
+        'drink',
+        'click',
+        'oxide',
+        'vapor',
+        'bring',
+        'dream',
+        'choir',
+        'sugar',
+        'sweet'
+      ]
+
+      this.gameAnswer = wordList[Math.floor(Math.random() * wordList.length)]
+      this.gameAnswerArr = this.gameAnswer.split("");
+      console.log('ans', this.gameAnswer)
+    } 
+  }
+
+  app.intialize();
+
+
+</script>
+</html>
