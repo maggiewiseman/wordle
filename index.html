@@ -133,12 +133,59 @@
 </body>
 <script>
   let app = {
+    dictionary: [
+      'tooth',
+      'chomp', 
+      'roast', 
+      'meter', 
+      'stare', 
+      'whale',
+      'crown',
+      'bayou',
+      'trick',
+      'cheat',
+      'crick',
+      'brook',
+      'brick',
+      'money',
+      'honey',
+      'paper',
+      'trick',
+      'quick',
+      'photo',
+      'clomp',
+      'clump',
+      'trump',
+      'final',
+      'payer',
+      'pound',
+      'crowd',
+      'quite',
+      'quiet',
+      'quell',
+      'smell',
+      'treat',
+      'doily',
+      'steam',
+      'waste',
+      'fling',
+      'drink',
+      'click',
+      'oxide',
+      'vapor',
+      'bring',
+      'dream',
+      'choir',
+      'sugar',
+      'sweet'
+    ],
     currentWord: "",
     submittedWordCount: 0,
     currentRowDomChildren: null,
     checkWordBtn: null,
     isLetter: new RegExp(/[aA-zZ]/),
     gameAnswer: '',
+
     intialize() {
       this.setGameAnswer()
       document.addEventListener('keyup', this.handleLetterSubmission, false);
@@ -163,23 +210,72 @@
     },
 
     handleWordSubmission(event) {
-      let currentWordArr = app.currentWord.split("");
-      currentWordArr.forEach((letter, index) => {
-        if (letter === app.gameAnswerArr[index] ) {
-          app.markLetterCorrect(index)
-        } else if (app.gameAnswerArr.indexOf(letter) > -1) {
-          app.markLetterPresent(index)
+      // if (!app.wordIsInDictionary()) { 
+      //   alert(`${app.currentWord} is not in my dictionary`);
+      //   return; 
+      // }
+
+      let currentWordHash = app.getLetterCountHash(this.currentWord);
+      let gameAnswerHash = app.getLetterCountHash(this.gameAnswer);
+      console.log('app hash', gameAnswerHash)
+
+      for(var letter in gameAnswerHash) {
+        let results = Array(5);
+        if (currentWordHash[letter]) {
+          //check indexes
+          const guessedLocations = currentWordHash[letter]
+          const answerLocations = gameAnswerHash[letter];
+
+          while(answerLocatios.length > 0) {
+            let correctLetterIndex = answerLocations[0];
+            let guessedIndex = guessedLocations.indexOf(correctLetterIndex)
+            if ( guessedIndex > -1) {
+              results[correctLetterIndex] = "correct";
+              guessedLocations.splice(guessedIndex, 1);
+            } else {
+              results[correctLetterIndex] = "not here"
+            }
+            answerLocations.shift();
+          }
+
+          if (guessedLocations.length > 0) {
+            guessedLocations.forEach(location)
+          }
+     
+
         } else {
-          app.markLetterWrong(index)
-        }
-      })
+          //letter is not in current guess. 
+          const indexes = gameAnswerHash[letter];
+          indexes.forEach(index) {
+            results[index] = "not present"
+          }
+        } 
+      }
+      // currentWordArr.forEach((letter, index) => {
+      //   if (hash[letter])  {
+      //     if (hash[letter].includes(index)) {
+      //       hash[letter].shift();
+      //       app.markLetterCorrect(index);
+      //     } else {
+      //       app.markLetterPresent(index);
+      //     }
+      //   } else {
+      //     app.markLetterWrong(index)
+      //   }
+      // })
       
       if (app.currentWord === app.gameAnswer) {
         alert('You win!!')
       }
 
+      console.log('hash', hash)
+
       app.setupForNextWord();
-      console.log('current word', app.currentWord)
+    },
+
+    wordIsInDictionary() {
+      console.log('this', this);
+      return this.dictionary.indexOf(this.currentWord) > -1;
     },
 
     markLetterCorrect(index) {
@@ -208,59 +304,48 @@
     },
 
     setGameAnswer() {
-      const wordList = [
-        'chomp', 
-        'roast', 
-        'meter', 
-        'stare', 
-        'whale',
-        'crown',
-        'bayou',
-        'trick',
-        'cheat',
-        'crick',
-        'brook',
-        'brick',
-        'money',
-        'honey',
-        'paper',
-        'trick',
-        'quick',
-        'photo',
-        'clomp',
-        'clump',
-        'trump',
-        'final',
-        'payer',
-        'pound',
-        'crowd',
-        'quite',
-        'quiet',
-        'quell',
-        'smell',
-        'treat',
-        'doily',
-        'steam',
-        'waste',
-        'fling',
-        'drink',
-        'click',
-        'oxide',
-        'vapor',
-        'bring',
-        'dream',
-        'choir',
-        'sugar',
-        'sweet'
-      ]
+      // this.gameAnswer = this.dictionary[Math.floor(Math.random() * this.dictionary.length)]
+      this.gameAnswer = "stare"
+      console.log('ans', this.gameAnswer);
+    },
 
-      this.gameAnswer = wordList[Math.floor(Math.random() * wordList.length)]
-      this.gameAnswerArr = this.gameAnswer.split("");
-      console.log('ans', this.gameAnswer)
-    } 
+    getLetterCountHash(word) {
+      let wordArr = word.split("");
+      let wordHash = {}
+
+      wordArr.forEach((letter, index) => {
+        if (wordHash[letter]) {
+          wordHash[letter].push(index)
+        } else {
+          wordHash[letter] = [index];
+        }
+      })
+
+      return wordHash
+    },
+
+    // checkAnswer() {
+    //   let currentWordArr = this.currentWord.split("");
+    //   let result = {}
+    //   currentWordArr.forEach((letter, index) => {
+    //     result[
+    //   })
+
+
+    // },
+
+    // test() {
+    //   this.currentWord = "tooth";
+    //   this.gameAnswer = "photo";
+    //   this.setGameAnswerHash('photo');
+    //   let result = this.checkAnswer;
+    //   console.log(result);
+    // }
   }
 
   app.intialize();
+
+  // app.test();
 
 
 </script>
