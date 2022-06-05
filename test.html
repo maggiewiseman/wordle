@@ -1,9 +1,30 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
 <title>Test Suite</title>
-<link rel="stylesheet" href="https://code.jquery.com/qunit/qunit-2.19.1.css">
+<link rel="stylesheet" href="./node_modules/qunit/qunit/qunit.css">
 <body>
   <div id="qunit"></div>
   <div id="qunit-fixture"></div>
-  <script src="https://code.jquery.com/qunit/qunit-2.19.1.js"></script>
+  <script src="./node_modules/qunit/qunit/qunit.js"></script>
+  <script src="./index.js"></script>
+
+  <script>
+  function testSetup(guess, answer, expectedResult) {
+    app.currentWord = guess;
+    app.setGameAnswer(answer);
+    return app.compareWords();
+    // return Helpers.equal(result, expectedResult)
+  }
+   // app.test('scoop', 'opine', );
+  // app.test('there', 'stare', ['WRONG_PLACE', 'INCORRECT', 'INCORRECT', 'CORRECT', 'WRONG_PLACE']);
+
+
+  
+    QUnit.module('wordSubmission', function() {
+      const result = testSetup('scoop', 'opine');
+      QUnit.test('double letters', function(assert) {
+        assert.deepEqual(result, ['INCORRECT', 'INCORRECT', 'WRONG_PLACE', 'INCORRECT', 'WRONG_PLACE']);
+      });
+    });
+  </script>
 </body>

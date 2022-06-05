@@ -109,6 +109,18 @@ let app = {
     //   return; 
     // }
 
+    let result = app.compareWords();
+    app.displayResult(result)
+
+    if (app.currentWord === app.gameAnswer) {
+      alert('You win!!')
+    }
+
+    app.setupForNextWord();
+    return result;
+  },
+
+  compareWords() {
     let currentWordHash = app.getLetterCountHash(app.currentWord);
     
     let result = Array(5);
@@ -122,15 +134,6 @@ let app = {
         })
       }
     }
-    
-    console.log(result)
-    app.displayResult(result)
-
-    if (app.currentWord === app.gameAnswer) {
-      alert('You win!!')
-    }
-
-    app.setupForNextWord();
     return result;
   },
 
@@ -246,20 +249,12 @@ let app = {
     })
 
     return wordHash
-  },
-
-  test(guess, answer, expectedResult) {
-    app.currentWord = guess;
-    app.setGameAnswer(answer);
-    let result = app.handleWordSubmission();
-    return Helpers.equal(result, expectedResult)
   }
 }
 
-app.intialize();
-
-  // app.test('scoop', 'opine', ['INCORRECT', 'INCORRECT', 'WRONG_PLACE', 'INCORRECT', 'WRONG_PLACE']);
-  // app.test('there', 'stare', ['WRONG_PLACE', 'INCORRECT', 'INCORRECT', 'CORRECT', 'WRONG_PLACE']);
+if (document.getElementById('checkWordBtn')) {
+  app.intialize();
+}
 
 
 
